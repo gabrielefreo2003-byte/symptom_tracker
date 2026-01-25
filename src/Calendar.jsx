@@ -1,53 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function Calendar() {
-  const days = Array.from({ length: 30 }, (_, i) => i + 1);
-
-  // Giorno selezionato
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(null);
 
-  // Sintomi salvati
-  const [symptoms, setSymptoms] = useState({});
+  // Cambiare mese
+  const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
 
-  const symptomOptions = ['Febbre', 'Nausea', 'Vomito', 'Diarrea', 'Mal di schiena'];
+  // Numero di giorni nel mese
+  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+  const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  // Carica i dati dal localStorage quando il componente si monta
-  useEffect(() => {
-    const saved = localStorage.getItem('symptoms');
-    if (saved) {
-      setSymptoms(JSON.parse(saved));
-    }
-  }, []);
-
-  // Salva i dati nel localStorage ogni volta che cambiano
-  useEffect(() => {
-    localStorage.setItem('symptoms', JSON.stringify(symptoms));
-  }, [symptoms]);
-
-  const toggleSymptom = (symptom) => {
-    setSymptoms((prev) => {
-      const daySymptoms = prev[selectedDay] || [];
-      if (daySymptoms.includes(symptom)) {
-        return { ...prev, [selectedDay]: daySymptoms.filter((s) => s !== symptom) };
-      } else {
-        return { ...prev, [selectedDay]: [...daySymptoms, symptom] };
-      }
-    });
-  };
+  const monthName = currentMonth.toLocaleString('default', { month: 'long' });
 
   return (
-    <div>
-      <h2>Calendario dei sintomi</h2>
-      <div style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '300px' }}>
-        {days.map((day) => (
+    <div style={{ maxWidth: '320px', marginTop: '20px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button onClick={prevMonth}>◀</button>
+        <h2>{monthName} {currentMonth.getFullYear()}</h2>
+        <button onClick={nextMonth}>▶</button>
+      </div>
+
+      {/* Giorni */}
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        {daysArray.map((day) => (
           <button
             key={day}
             style={{
               width: '40px',
               height: '40px',
               margin: '2px',
-              cursor: 'pointer',
               backgroundColor: selectedDay === day ? '#87cefa' : '#eee',
+              border: '1px solid #ccc',
+              cursor: 'pointer'
             }}
             onClick={() => setSelectedDay(day)}
           >
@@ -56,31 +43,10 @@ function Calendar() {
         ))}
       </div>
 
-      {selectedDay && (
-        <div style={{ marginTop: '20px' }}>
-          <h3>Inserisci sintomi per il giorno {selectedDay}</h3>
-          {symptomOptions.map((symptom) => (
-            <label key={symptom} style={{ display: 'block' }}>
-              <input
-                type="checkbox"
-                checked={(symptoms[selectedDay] || []).includes(symptom)}
-                onChange={() => toggleSymptom(symptom)}
-              />
-              {symptom}
-            </label>
-          ))}
-
-          <p>
-            Sintomi selezionati:{' '}
-            {(symptoms[selectedDay] || []).join(', ') || 'Nessuno'}
-          </p>
-        </div>
-      )}
+      {/* Giorno selezionato */}
+      {selectedDay && <p>Hai selezionato il giorno {selectedDay} {monthName}</p>}
     </div>
   );
 }
 
 export default Calendar;
-
-
-
