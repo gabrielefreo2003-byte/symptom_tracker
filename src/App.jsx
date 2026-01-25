@@ -4,7 +4,16 @@ import './App.css';
 
 function App() {
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',   // orizzontale
+        alignItems: 'center',       // verticale
+        height: '100vh',            // altezza 100% viewport
+        fontFamily: 'sans-serif',
+        flexDirection: 'column'
+      }}
+    >
       <h1>Symptom Tracker</h1>
       <Calendar />
     </div>
@@ -12,3 +21,4 @@ function App() {
 }
 
 export default App;
+
