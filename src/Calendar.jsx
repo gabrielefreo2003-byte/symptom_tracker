@@ -64,7 +64,14 @@ function Calendar() {
       </div>
 
       {/* Giorni */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+    <div
+     style={{
+         display: 'grid',
+         gridTemplateColumns: 'repeat(7, 50px)', // 7 colonne da 50px
+         gap: '5px',                             // spazio tra le celle
+         justifyContent: 'center'
+     }}
+    >   
         {daysArray.map(day => {
           const key = getDateKey(day);
           const hasSymptoms = symptomsData[key] && symptomsData[key].length > 0;
